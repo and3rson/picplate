@@ -98,41 +98,49 @@ class Ticket(object):
             url = computed['background-image']
             if url.startswith('http://') or url.startswith('https://'):
                 raw = urllib.urlopen(url).read()
-                img = Image.open(StringIO(raw))
-                if computed['background-size'] == 'stretch':
-                    img = img.resize((computed['width'], computed['height']), Image.BICUBIC)
-                elif computed['background-size'] in ('cover', 'fit'):
-                    bw = float(computed['width'])
-                    bh = float(computed['height'])
-                    iw = float(img.size[0])
-                    ih = float(img.size[1])
-                    xs = iw / bw
-                    ys = ih / bh
-
-                    if computed['background-size'] == 'cover':
-                        if xs < ys:
-                            dim = int(iw / xs), int(ih / xs)
-                        else:
-                            dim = int(iw / ys), int(ih / ys)
-                    elif computed['background-size'] == 'fit':
-                        if xs > ys:
-                            dim = int(iw / xs), int(ih / xs)
-                        else:
-                            dim = int(iw / ys), int(ih / ys)
-                    img = img.resize(dim, Image.BICUBIC)
-
-                    xd, yd = int(img.size[0] - bw), int(img.size[1] - bh)
-
-                    img = img.crop((xd / 2, yd / 2, img.size[0] - xd / 2, img.size[1] - yd / 2))
-                else:
-                    raise TicketException('Unknown background-size - "{}"'.format(computed['background-size']))
-
-                if img.mode == 'RGBA':
-                    self.img.paste(img, (computed['left'], computed['top']), img)
-                else:
-                    self.img.paste(img, (computed['left'], computed['top']))
             else:
-                raise TicketException('Local images not yet implemented.')
+                try:
+                    f = open(computed['background-image'], 'r')
+                except Exception as e:
+                    raise TicketException('Failed to read local image file - "{}": {}'.format(computed['background-image'], e))
+                raw = f.read()
+                f.close()
+            img = Image.open(StringIO(raw))
+            if img.mode not in ('RGB', 'RGBA'):
+                img = img.convert('RGBA')
+
+            if computed['background-size'] == 'stretch':
+                img = img.resize((computed['width'], computed['height']), Image.ANTIALIAS)
+            elif computed['background-size'] in ('cover', 'fit'):
+                bw = float(computed['width'])
+                bh = float(computed['height'])
+                iw = float(img.size[0])
+                ih = float(img.size[1])
+                xs = iw / bw
+                ys = ih / bh
+
+                if computed['background-size'] == 'cover':
+                    if xs < ys:
+                        dim = int(iw / xs), int(ih / xs)
+                    else:
+                        dim = int(iw / ys), int(ih / ys)
+                elif computed['background-size'] == 'fit':
+                    if xs > ys:
+                        dim = int(iw / xs), int(ih / xs)
+                    else:
+                        dim = int(iw / ys), int(ih / ys)
+                img = img.resize(dim, Image.BICUBIC)
+
+                xd, yd = int(img.size[0] - bw), int(img.size[1] - bh)
+
+                img = img.crop((xd / 2, yd / 2, img.size[0] - xd / 2, img.size[1] - yd / 2))
+            else:
+                raise TicketException('Unknown background-size - "{}"'.format(computed['background-size']))
+
+            if img.mode == 'RGBA':
+                self.img.paste(img, (computed['left'], computed['top']), img)
+            else:
+                self.img.paste(img, (computed['left'], computed['top']))
 
         # Draw text (if set)
         text = element.text
@@ -143,7 +151,7 @@ class Ticket(object):
                 try:
                     font = ImageFont.truetype(computed['font-family'], computed['font-size'])
                 except IOError as e:
-                    raise TicketException('TTF error for "{}": {}'.format(computed['font-family'], e.message))
+                    raise TicketException('TTF error - "{}": {}'.format(computed['font-family'], e))
                 offset = 0
                 for line in lines:
                     line = line.strip()
