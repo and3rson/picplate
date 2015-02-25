@@ -140,7 +140,10 @@ class Ticket(object):
             text = text.strip()
             if len(text):
                 lines = text.split('\n')
-                font = ImageFont.truetype(computed['font-family'], computed['font-size'])
+                try:
+                    font = ImageFont.truetype(computed['font-family'], computed['font-size'])
+                except IOError as e:
+                    raise TicketException('TTF error for "{}": {}'.format(computed['font-family'], e.message))
                 offset = 0
                 for line in lines:
                     line = line.strip()
@@ -152,7 +155,8 @@ class Ticket(object):
             self.render_element(child, element)
 
     def _subst(self, match):
-        return self.context.get(match.group(1), '')
+        v = self.context.get(match.group(1), '')
+        return v.replace('&', '&amp;')
 
     def render(self, width=None, height=None):
         if width:
@@ -166,7 +170,7 @@ class Ticket(object):
         self.img = Image.new('RGBA', (self.width, self.height), color=ImageColor.getrgb('#FFFFFF'))
         self.draw = ImageDraw.Draw(self.img)
 
-        doc = ET.fromstring(self.source)
+        doc = ET.fromstring(self.source.encode('UTF-8'))
 
         self.i = 0
         self.render_element(doc)
