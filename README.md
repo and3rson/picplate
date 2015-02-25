@@ -54,7 +54,7 @@ Next, we're creating a `picplate` `Ticket` instance:
 
 Voila. After running this script, `out.png` will be written in current directory:
 
-[!Ticket result](http://static.dun.ai/public/img/picplate1.jpg "Ticket result")
+![Ticket result](http://static.dun.ai/public/img/picplate1.jpg "Ticket result")
 
 ## Important technical info
 
