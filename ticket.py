@@ -20,10 +20,12 @@ class Ticket(object):
         self.height = height
 
     def load_file(self, filename):
-        self.source = ET.parse(filename)
+        f = open(filename)
+        self.source = f.read()
+        f.close()
 
     def load_xml(self, xml):
-        self.source = ET.fromstring(xml)
+        self.source = xml
 
     def assign(self, **kwargs):
         self.context.update(kwargs)
@@ -142,8 +144,6 @@ class Ticket(object):
                 offset = 0
                 for line in lines:
                     line = line.strip()
-                    for key, value in self.context.items():
-                        line = re.sub('\{\{\s*(\w+)\s*\}\}', self._subst, line)
                     self.draw.text((computed['left'], computed['top'] + offset), line, font=font, fill=computed['color'])
                     offset += computed['font-size']
 
@@ -160,10 +160,15 @@ class Ticket(object):
         if height:
             self.height = height
 
+        for key, value in self.context.items():
+            self.source = re.sub('\{\{\s*(\w+)\s*\}\}', self._subst, self.source)
+
         self.img = Image.new('RGBA', (self.width, self.height), color=ImageColor.getrgb('#FFFFFF'))
         self.draw = ImageDraw.Draw(self.img)
 
+        doc = ET.fromstring(self.source)
+
         self.i = 0
-        self.render_element(self.source.getroot())
+        self.render_element(doc)
 
         return self.img
