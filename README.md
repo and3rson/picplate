@@ -42,18 +42,15 @@ Consider we have created this XML:
 
 Next, we're creating a `picplate` `Ticket` instance:
 
-```
-t = Ticket(filename='file.xml', width=900, height=900)
-t.assign(
-    title='Some activity',
-    date='Some date',
-    club='Wherever',
-    address='Somewhere'
-)
-img = t.render()
-img.save('out.png')
-
-```
+    t = Ticket(filename='file.xml', width=900, height=900)
+    t.assign(
+        title='Some activity',
+        date='Some date',
+        club='Wherever',
+        address='Somewhere'
+    )
+    img = t.render()
+    img.save('out.png')
 
 Voila. After running this script, `out.png` will be written in current directory:
 
