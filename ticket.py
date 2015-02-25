@@ -156,7 +156,10 @@ class Ticket(object):
 
     def _subst(self, match):
         v = self.context.get(match.group(1), '')
-        return v.replace('&', '&amp;')
+        if isinstance(v, (str, unicode)):
+            return v.replace('&', '&amp;')
+        else:
+            return unicode(v)
 
     def render(self, width=None, height=None):
         if width:
