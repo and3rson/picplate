@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<block font-family="lato.ttf" color="#FFFFFF">
+    <block top="0%" left="0%" width="50%" height="60%" background-color="#17F" background-size="cover" background-image="http://www.dhasselhoff.net/blog/wp-content/uploads/2014/03/slide1.jpg">
+    </block>
+    <block top="0%" left="50%" width="50%" height="60%" background-color="#050C2E">
+        <block top="16%" left="10%" width="100%" height="10%" font-size="5%">
+            {{ title }}
+        </block>
+        <block top="37%" left="10%" width="100%" height="10%" font-size="5%">
+            {{ date }}
+        </block>
+        <block top="58%" left="10%" width="100%" height="10%" font-size="5%">
+            {{ club }}
+        </block>
+        <block top="79%" left="10%" width="100%" height="10%" font-size="5%">
+            {{ address }}
+        </block>
+    </block>
+    <block top="60%" left="0%" width="50%" height="40%" background-color="#050C2E">
+        <block top="25%" left="25%" height="50%" width="50%" background-size="fit" background-image="https://assets-cdn.github.com/images/modules/logos_page/Octocat.png"></block>
+    </block>
+    <block top="60%" left="50%" width="50%" height="40%" background-size="cover" background-image="http://darkfestivals.ru/wp-content/uploads/2012/02/375984_10150396170709005_246749614004_8638267_472527038_n.jpg">
+        <block top="10px" left="20px" width="30px" height="40px" font-family="lato.ttf" color="#FFF" font-size="36px">Map</block>
+    </block>
+</block>

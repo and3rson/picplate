@@ -52,3 +52,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Ignore HG dir
+.hg/
+.hgignore
+
+# Images
+*.png
