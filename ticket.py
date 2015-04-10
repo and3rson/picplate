@@ -181,9 +181,12 @@ class Ticket(object):
         self.img = Image.new('RGBA', (self.width, self.height), color=ImageColor.getrgb('#FFFFFF'))
         self.draw = ImageDraw.Draw(self.img)
 
-        doc = ET.fromstring(self.source.encode('UTF-8'))
-
-        self.i = 0
-        self.render_element(doc)
+        try:
+            doc = ET.fromstring(self.source.encode('UTF-8'))
+        except ET.ParseError as e:
+            raise TicketException(e)
+        else:
+            self.i = 0
+            self.render_element(doc)
 
         return self.img
